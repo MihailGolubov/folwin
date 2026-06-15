@@ -44,3 +44,9 @@ jobs:
           script: |
             cd C:/Users/Administrator/Desktop/folwin
             pm2 restart folwin || pm2 start npm --name folwin -- start
+
+      - name: Notificare finală în GitHub
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.notice("🚀 Deploy complet pe VPS pentru Folwin!")
