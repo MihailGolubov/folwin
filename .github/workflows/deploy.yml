@@ -31,11 +31,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          source: "."
+          source: "./*"
           target: "/Users/Administrator/Desktop/folwin"
-          rm: false
+          rm: true
           strip_components: 0
-          overwrite: true
           exclude: |
             .git/
             node_modules/
