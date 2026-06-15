@@ -31,11 +31,14 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          source: |
-            ./**
-            !./.git/**
-            !./node_modules/**
+          source: "."
           target: "/Users/Administrator/Desktop/folwin"
+          rm: false
+          strip_components: 0
+          overwrite: true
+          exclude: |
+            .git/
+            node_modules/
 
       - name: Restart PM2 on VPS
         uses: appleboy/ssh-action@v0.1.7
