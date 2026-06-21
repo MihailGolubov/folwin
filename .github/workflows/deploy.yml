@@ -24,16 +24,16 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Install WinSCP on runner
+      - name: Download WinSCP Portable (SourceForge mirror)
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
-          wget https://winscp.net/download/WinSCP-6.3.2-Portable.zip -O winscp.zip
+          wget -O winscp.zip "https://sourceforge.net/projects/winscp/files/WinSCP/6.3.2/WinSCP-6.3.2-Portable.zip/download"
           unzip winscp.zip -d winscp
 
       - name: Upload files to Windows Server via WinSCP
         run: |
-          ./winscp/winscp.com /command \
+          ./winscp/WinSCP.com /command \
             "open sftp://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }} -privatekey=${{ secrets.SSH_KEY }}" \
             "put -delete ./ C:/Users/Administrator/folwin" \
             "exit"
