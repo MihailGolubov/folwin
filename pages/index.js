@@ -10,7 +10,7 @@ export async function getServerSideProps() {
 export default function Home({ fruits }) {
   return (
     <div style={{ padding: 20 }}>
-      <h1>Lista de fructe 3</h1>
+      <h1>Lista de fructe 777</h1>
       {fruits.map((f) => (
         <div key={f._id}>
           <strong>{f.name}</strong> – {f.color}
