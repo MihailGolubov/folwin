@@ -24,15 +24,20 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Copy full project to VPS
+      - name: Copy project to VPS (fără .git, fără node_modules)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
-          source: "**"
+          source: "./*"
           target: "/Users/Administrator/Desktop/folwin"
+          rm: true
+          strip_components: 0
+          exclude: |
+            .git/
+            node_modules/
 
       - name: Restart PM2 on VPS
         uses: appleboy/ssh-action@v0.1.7
