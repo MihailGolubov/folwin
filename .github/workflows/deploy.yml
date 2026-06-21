@@ -24,16 +24,17 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Add server to known_hosts
+      - name: Install lftp (SFTP client)
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          sudo apt-get update
+          sudo apt-get install -y lftp
 
-      - name: Upload files to Windows Server via SCP
+      - name: Upload files to Windows Server via SFTP (lftp)
         run: |
           echo "${{ secrets.SSH_KEY }}" > key.pem
           chmod 600 key.pem
-          scp -r -P ${{ secrets.SSH_PORT }} -i key.pem ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/c/Users/Administrator/folwin
+          lftp -e "set sftp:auto-confirm yes; mirror -R ./ /Users/Administrator/folwin; bye" \
+            -u ${{ secrets.SSH_USER }}, sftp://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}
 
       - name: Restart PM2 on Windows Server
         uses: appleboy/ssh-action@v1.0.3
