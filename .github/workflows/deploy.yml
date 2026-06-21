@@ -24,31 +24,24 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Copy project to VPS (fără .git și node_modules)
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy files to Windows Server via rsync
+        uses: burnett01/rsync-deployments@v6.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "./*"
-          target: "C:/Users/Administrator/Desktop/folwin"
-          rm: true
-          strip_components: 0
+          switches: -avzr --delete
+          path: "./"
+          remote_path: "/cygdrive/c/Users/Administrator/folwin"
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_KEY }}
+          remote_port: ${{ secrets.SSH_PORT }}
 
-      - name: Restart PM2 on VPS
-        uses: appleboy/ssh-action@v0.1.7
+      - name: Restart PM2 on Windows Server
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            cd "C:/Users/Administrator/Desktop/folwin"
+            cd "C:/Users/Administrator/folwin"
             pm2 restart folwin || pm2 start npm --name folwin -- start
-
-      - name: Notificare finală în GitHub
-        uses: actions/github-script@v7
-        with:
-          script: |
-            core.notice("🚀 Deploy complet pe VPS pentru Folwin!")
