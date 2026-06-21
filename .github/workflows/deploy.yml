@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" > key.pem
           chmod 600 key.pem
-          scp -r -P ${{ secrets.SSH_PORT }} -i key.pem ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/C:/Users/Administrator/folwin
+          scp -r -P ${{ secrets.SSH_PORT }} -i key.pem ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/c/Users/Administrator/folwin
 
       - name: Restart PM2 on Windows Server
         uses: appleboy/ssh-action@v1.0.3
