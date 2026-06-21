@@ -24,20 +24,11 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Download WinSCP Portable (SourceForge mirror)
+      - name: Upload files to Windows Server via SCP
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-          wget -O winscp.zip "https://sourceforge.net/projects/winscp/files/WinSCP/6.3.2/WinSCP-6.3.2-Portable.zip/download"
-          unzip winscp.zip -d winscp
-          chmod +x ./winscp/WinSCP.com
-
-      - name: Upload files to Windows Server via WinSCP
-        run: |
-          ./winscp/WinSCP.com /command \
-            "open sftp://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }} -privatekey=${{ secrets.SSH_KEY }}" \
-            "put -delete ./ C:/Users/Administrator/folwin" \
-            "exit"
+          echo "${{ secrets.SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+          scp -r -P ${{ secrets.SSH_PORT }} -i key.pem ./ C:/Users/Administrator/folwin
 
       - name: Restart PM2 on Windows Server
         uses: appleboy/ssh-action@v1.0.3
