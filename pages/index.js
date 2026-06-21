@@ -1,5 +1,5 @@
 export async function getServerSideProps() {
-  const res = await fetch("https://folwin.com/api/fruits");
+  const res = await fetch("http://folwin.com/api/fruits");
   const fruits = await res.json();
 
   return {
