@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
         run: npm install
@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Copy project to VPS (fără .git, fără node_modules)
+      - name: Copy project to VPS (fără .git și node_modules)
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -32,12 +32,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           source: "./*"
-          target: "/Users/Administrator/Desktop/folwin"
+          target: "C:/Users/Administrator/Desktop/folwin"
           rm: true
           strip_components: 0
-          exclude: |
-            .git/
-            node_modules/
 
       - name: Restart PM2 on VPS
         uses: appleboy/ssh-action@v0.1.7
@@ -47,7 +44,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd C:/Users/Administrator/Desktop/folwin
+            cd "C:/Users/Administrator/Desktop/folwin"
             pm2 restart folwin || pm2 start npm --name folwin -- start
 
       - name: Notificare finală în GitHub
