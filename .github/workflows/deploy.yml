@@ -24,16 +24,19 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy files to Windows Server via rsync
-        uses: burnett01/rsync-deployments@v5.2
-        with:
-          switches: -avzr --delete
-          path: "./"
-          remote_path: "/cygdrive/c/Users/Administrator/folwin"
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_user: ${{ secrets.SSH_USER }}
-          remote_key: ${{ secrets.SSH_KEY }}
-          remote_port: ${{ secrets.SSH_PORT }}
+      - name: Install WinSCP on runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://winscp.net/download/WinSCP-6.3.2-Portable.zip -O winscp.zip
+          unzip winscp.zip -d winscp
+
+      - name: Upload files to Windows Server via WinSCP
+        run: |
+          ./winscp/winscp.com /command \
+            "open sftp://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }} -privatekey=${{ secrets.SSH_KEY }}" \
+            "put -delete ./ C:/Users/Administrator/folwin" \
+            "exit"
 
       - name: Restart PM2 on Windows Server
         uses: appleboy/ssh-action@v1.0.3
