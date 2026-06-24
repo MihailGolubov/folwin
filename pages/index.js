@@ -1,5 +1,8 @@
-export async function getServerSideProps() {
-  const res = await fetch("http://folwin.com/api/fruits");
+export async function getServerSideProps(context) {
+  const protocol = context.req.headers["x-forwarded-proto"] || "http";
+  const host = context.req.headers.host;
+
+  const res = await fetch(`${protocol}://${host}/api/fruits`);
   const fruits = await res.json();
 
   return {
