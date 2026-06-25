@@ -1,22 +1,44 @@
-export async function getServerSideProps(context) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
+import { useEffect, useState } from "react";
 
-  const res = await fetch(`${protocol}://${host}/api/fruits`);
-  const fruits = await res.json();
+export default function Home() {
+  const [data, setData] = useState([]);
 
-  return {
-    props: { fruits },
-  };
-}
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await fetch("/api/folwin");
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error("Eroare la fetch:", err);
+      }
+    }
 
-export default function Home({ fruits }) {
+    loadData();
+  }, []);
+
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Lista de fructe smt 226</h1>
-      {fruits.map((f) => (
-        <div key={f._id}>
-          <strong>{f.name}</strong> – {f.color}
+    <div style={{ padding: "40px", fontFamily: "Arial" }}>
+      <h1>Hello</h1>
+
+      <h2>Date din baza de date:</h2>
+
+      {data.length === 0 && <p>Nu există date în FolwinBase.</p>}
+
+      {data.map((item) => (
+        <div
+          key={item._id}
+          style={{
+            marginTop: "20px",
+            padding: "20px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            maxWidth: "400px",
+          }}
+        >
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <strong>{item.price}</strong>
         </div>
       ))}
     </div>
