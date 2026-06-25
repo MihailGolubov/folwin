@@ -38,7 +38,9 @@ export default function Home() {
         >
           <h3>{item.title}</h3>
           <p>{item.description}</p>
-          <strong>{item.price}</strong>
+
+          <p><strong>Număr:</strong> {item.number}</p>
+          <p><strong>Varianta:</strong> {item.variant}</p>
         </div>
       ))}
     </div>
