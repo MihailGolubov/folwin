@@ -78,12 +78,18 @@ export default function Dashboard() {
     const res = await fetch("/api/folwin", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editingItem),
+      body: JSON.stringify({
+        id: editingItem.id, // IMPORTANT: trimitem id corect
+        title: editingItem.title,
+        description: editingItem.description,
+        number: editingItem.number,
+        variant: editingItem.variant,
+      }),
     });
 
     if (res.ok) {
       setItems(
-        items.map((i) => (i._id === editingItem._id ? editingItem : i))
+        items.map((i) => (i._id === editingItem.id ? editingItem : i))
       );
       setEditingItem(null);
     }
@@ -141,7 +147,14 @@ export default function Dashboard() {
             Șterge
           </button>
 
-          <button onClick={() => setEditingItem(item)}>
+          <button
+            onClick={() =>
+              setEditingItem({
+                ...item,
+                id: item._id, // FIX: convertim _id → id
+              })
+            }
+          >
             Modifică
           </button>
         </div>
